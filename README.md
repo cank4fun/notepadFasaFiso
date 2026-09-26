@@ -1,6 +1,6 @@
 # notepadFasaFiso
 
-i made ts because opening a text file should not feel like launching a whole browser 😭
+i made ts because opening a text file should not feel like launching a whole browser
 
 notepadFasaFiso is a native C++23 text editor + file viewer for Windows and Linux.  
 the general idea is basically **"VLC but for text/files"** — handle a lot of stuff, stay fast, dont turn into an IDE, dont eat your pc alive
