@@ -2001,6 +2001,7 @@ WxMainFrame::WxMainFrame(app::LaunchRequest startupRequest
     SetBackgroundColour(theme_.frame);
     searchSession_.options.caseSensitive = false;
     SetMinClientSize(wxSize(640, 400));
+    CentreOnScreen();
 
     applyLayoutDensity();
 

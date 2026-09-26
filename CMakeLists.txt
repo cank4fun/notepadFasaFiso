@@ -191,6 +191,14 @@ if(NFF_BUILD_WX_GUI)
 
     set(NFF_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
     file(MAKE_DIRECTORY "${NFF_GENERATED_DIR}")
+    if(WIN32)
+        set(NFF_WINDOWS_APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/assets/nff-app.ico")
+        configure_file(
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/platform/windows/NffAppIcon.rc.in"
+            "${NFF_GENERATED_DIR}/NffAppIcon.rc"
+            @ONLY
+        )
+    endif()
     file(READ "${CMAKE_CURRENT_SOURCE_DIR}/assets/nff-tray.png" NFF_TRAY_PNG_HEX HEX)
     string(REGEX REPLACE "([0-9A-Fa-f][0-9A-Fa-f])" "0x\\1," NFF_TRAY_PNG_BYTES "${NFF_TRAY_PNG_HEX}")
     file(WRITE "${NFF_GENERATED_DIR}/NffEmbeddedTrayPng.hpp"
@@ -207,6 +215,7 @@ if(NFF_BUILD_WX_GUI)
             src/gui/wx/WxTheme.cpp
             src/gui/wx/WxTitleBar.cpp
             src/gui/wx/WxTrayIcon.cpp
+            "${NFF_GENERATED_DIR}/NffAppIcon.rc"
         )
     elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         find_package(PkgConfig REQUIRED)
