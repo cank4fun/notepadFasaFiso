@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.24)
 
 project(notepadFasaFiso LANGUAGES CXX)
 
+if(WIN32)
+    enable_language(RC)
+endif()
+
 option(NFF_BUILD_TESTS "Build notepadFasaFiso tests" ON)
 option(NFF_BUILD_BENCHMARKS "Build notepadFasaFiso benchmarks" OFF)
 option(NFF_BUILD_WX_GUI "Build the wxWidgets desktop GUI" OFF)
