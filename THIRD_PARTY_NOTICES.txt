@@ -1,0 +1,110 @@
+notepadFasaFiso - Third-Party Notices
+====================================
+
+This file is an index for third-party software used by or distributed with
+notepadFasaFiso. It does not replace the applicable license and notice
+material shipped in third_party/licenses/.
+
+Project license
+---------------
+notepadFasaFiso itself is licensed under the MIT License. See LICENSE.
+
+Windows portable dependency set
+-------------------------------
+The Windows portable build uses the pinned vcpkg dependency set documented in
+DEPENDENCIES.md. The release links with or includes code from the components
+below. The corresponding license/notice material shipped with the distribution
+is listed in parentheses.
+
+- wxWidgets (third_party/licenses/wxwidgets.txt)
+- Scintilla / Lexilla (third_party/licenses/scintilla-lexilla.txt)
+- Expat (third_party/licenses/expat.txt)
+- libjpeg-turbo (third_party/licenses/libjpeg-turbo.txt)
+- libpng (third_party/licenses/libpng.txt)
+- libwebp (third_party/licenses/libwebp.txt)
+- NanoSVG (third_party/licenses/nanosvg.txt)
+- PCRE2 (third_party/licenses/pcre2.txt)
+- libtiff (third_party/licenses/tiff.txt)
+- zlib (third_party/licenses/zlib.txt)
+- liblzma, where present in a release dependency closure
+  (third_party/licenses/liblzma.txt)
+
+Required libjpeg/IJG acknowledgement:
+
+  This software is based in part on the work of the Independent JPEG Group.
+
+libtiff attribution retained for the historical LZW-derived code covered by
+its bundled notice:
+
+  Portions of the libtiff LZW support are based on software developed by the
+  University of California, Berkeley.
+
+wxWidgets is distributed under the wxWindows Library Licence, Version 3.1.
+The wxWindows exception permits binary object-code works based on the library
+to be distributed under the distributor's own terms, subject to the licence.
+
+PCRE2 10.47 is distributed under BSD-3-Clause WITH PCRE2-exception. Its full
+binary-redistribution terms are reproduced in third_party/licenses/pcre2.txt.
+
+Linux AppImage dependency set
+-----------------------------
+The Linux AppImage additionally bundles shared libraries from the Debian build
+baseline selected for the release. That runtime closure depends on the exact
+build host and is therefore inventoried from the finished AppDir rather than
+maintained as a hand-written static list.
+
+During AppImage packaging, tools/release/collect-appimage-licenses.sh:
+
+1. inventories each bundled shared library,
+2. maps it to the installed Debian package that supplied it,
+3. records the exact binary and source package versions,
+4. copies that package's /usr/share/doc/<package>/copyright file, and
+5. copies Debian's /usr/share/common-licenses directory so references from
+   Debian copyright files remain resolvable inside the AppImage.
+
+The generated material is stored inside the AppImage under:
+
+  /usr/share/doc/notepadFasaFiso/
+
+including BUNDLED_DEBIAN_PACKAGES.txt, BUNDLED_DEBIAN_SOURCES.txt,
+debian-package-copyrights/ and common-licenses/.
+
+For bundled Debian libraries whose licenses require corresponding source,
+tools/release/collect-appimage-sources.sh retrieves the exact Debian source
+package artifacts listed in BUNDLED_DEBIAN_SOURCES.txt. The resulting
+`notepadFasaFiso-appimage-corresponding-source.tar.gz` is part of the Linux
+binary release and must be published beside the AppImage.
+
+AppImage type2 runtime
+----------------------
+The AppImage file itself is prefixed with the AppImage type2 runtime. The
+release tooling accepts only the pinned x86_64 runtime whose SHA-256 is
+`1cc49bcf1e2ccd593c379adb17c9f85a36d619088296504de95b1d06215aebbf`,
+corresponding to AppImage/type2-runtime commit
+`75849dce7cc37e4319b633df1f116ca895c71a12`.
+
+The runtime's own license and the permissive notices needed for its musl,
+squashfuse, zstd and mimalloc components are under
+third_party/licenses/appimage-runtime/. The existing zlib notice also applies
+to the runtime's zlib component. The runtime statically links libfuse 3.15.0
+library code under LGPL-2.1. The AppImage embeds a copy of the LGPL-2.1 license
+under `usr/share/doc/notepadFasaFiso/common-licenses/LGPL-2.1`, and the runtime
+source bundle below carries the exact libfuse source plus the patch/build
+materials used by the pinned type2-runtime source tree.
+
+tools/release/collect-appimage-runtime-sources.sh verifies the exact runtime
+binary hash and creates `notepadFasaFiso-appimage-runtime-source.tar.gz`,
+containing the pinned type2-runtime source, the exact libfuse 3.15.0 source,
+and the exact squashfuse 0.5.2 source. Publish this runtime source bundle beside
+the AppImage and the Debian corresponding-source bundle.
+
+Packaging fails if a bundled shared library cannot be mapped to an installed
+Debian package with an available copyright notice, if the recorded exact Debian
+source package cannot be retrieved, or if the supplied AppImage runtime does
+not match the pinned runtime hash.
+
+No endorsement
+--------------
+Names of third-party projects and contributors are used only for attribution
+and license compliance. No endorsement of notepadFasaFiso by those projects or
+contributors is implied.

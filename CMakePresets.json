@@ -1,0 +1,195 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "Development",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "NFF_BUILD_TESTS": "ON",
+        "NFF_BUILD_BENCHMARKS": "OFF"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "NFF_BUILD_TESTS": "ON",
+        "NFF_BUILD_BENCHMARKS": "OFF"
+      }
+    },
+    {
+      "name": "gui-dev",
+      "displayName": "GUI Development",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/gui-dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "NFF_BUILD_TESTS": "ON",
+        "NFF_BUILD_BENCHMARKS": "OFF",
+        "NFF_BUILD_WX_GUI": "ON"
+      }
+    },
+    {
+      "name": "gui-release",
+      "displayName": "GUI Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/gui-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "NFF_BUILD_TESTS": "ON",
+        "NFF_BUILD_BENCHMARKS": "OFF",
+        "NFF_BUILD_WX_GUI": "ON"
+      }
+    },
+    {
+      "name": "bench-release",
+      "displayName": "Benchmark Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/bench-release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "NFF_BUILD_TESTS": "ON",
+        "NFF_BUILD_BENCHMARKS": "ON"
+      }
+    },
+    {
+      "name": "gui-automation-dev",
+      "displayName": "GUI Automation Development",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/gui-automation-dev",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "NFF_BUILD_TESTS": "ON",
+        "NFF_BUILD_BENCHMARKS": "OFF",
+        "NFF_BUILD_WX_GUI": "ON",
+        "NFF_BUILD_GUI_DRIVER": "ON",
+        "NFF_ENABLE_GUI_AUTOMATION": "ON"
+      }
+    },
+    {
+      "name": "windows-portable",
+      "displayName": "Windows Portable Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/windows-portable",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "NFF_BUILD_TESTS": "OFF",
+        "NFF_BUILD_BENCHMARKS": "OFF",
+        "NFF_BUILD_WX_GUI": "ON",
+        "NFF_PORTABLE_WINDOWS": "ON",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}/packaging/vcpkg"
+      }
+    },
+    {
+      "name": "linux-appimage",
+      "displayName": "Linux AppImage Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux-appimage",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "NFF_BUILD_TESTS": "OFF",
+        "NFF_BUILD_BENCHMARKS": "OFF",
+        "NFF_BUILD_WX_GUI": "ON",
+        "NFF_APPIMAGE_BUILD": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "dev",
+      "configurePreset": "dev"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "gui-dev",
+      "configurePreset": "gui-dev"
+    },
+    {
+      "name": "gui-release",
+      "configurePreset": "gui-release"
+    },
+    {
+      "name": "bench-release",
+      "configurePreset": "bench-release"
+    },
+    {
+      "name": "gui-automation-dev",
+      "configurePreset": "gui-automation-dev"
+    },
+    {
+      "name": "windows-portable",
+      "configurePreset": "windows-portable",
+      "targets": [
+        "notepadFasaFiso_gui"
+      ]
+    },
+    {
+      "name": "linux-appimage",
+      "configurePreset": "linux-appimage",
+      "targets": [
+        "notepadFasaFiso_gui"
+      ]
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "dev",
+      "configurePreset": "dev",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gui-dev",
+      "configurePreset": "gui-dev",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gui-release",
+      "configurePreset": "gui-release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "bench-release",
+      "configurePreset": "bench-release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gui-automation-dev",
+      "configurePreset": "gui-automation-dev",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

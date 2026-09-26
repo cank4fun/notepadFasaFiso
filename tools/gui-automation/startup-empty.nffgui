@@ -1,0 +1,3 @@
+wait window.main visible
+snapshot startup-empty
+close

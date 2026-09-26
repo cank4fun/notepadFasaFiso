@@ -1,0 +1,10 @@
+{
+  "name": "notepadfasafiso-release-deps",
+  "version-string": "initial-public-release",
+  "dependencies": [
+    {
+      "name": "wxwidgets",
+      "default-features": false
+    }
+  ]
+}

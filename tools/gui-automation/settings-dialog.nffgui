@@ -1,0 +1,9 @@
+wait menu.view visible
+click menu.view
+shortcut UP
+shortcut ENTER
+wait dialog.settings visible
+snapshot settings-dialog
+click settings.cancel
+wait dialog.settings hidden
+close
