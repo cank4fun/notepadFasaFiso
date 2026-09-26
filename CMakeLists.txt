@@ -126,7 +126,7 @@ if(WIN32)
         src/diagnostics/WindowsCrashReporter.cpp
         src/storage/RandomAccessFileWindows.cpp
     )
-    target_link_libraries(nff_core PRIVATE Shell32 Dwrite Dbghelp Advapi32)
+    target_link_libraries(nff_core PRIVATE Shell32 Dwrite Dbghelp)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_sources(nff_core PRIVATE
         src/platform/linux/LinuxPlatform.cpp
