@@ -38,6 +38,9 @@ public:
         wxImage::AddHandler(new wxPNGHandler);
         SetAppName("notepadFasaFiso");
         SetAppDisplayName("notepadFasaFiso");
+#ifdef __WXMSW__
+        platform::refreshFileAssociations();
+#endif
 
         std::vector<std::string> argumentStorage;
         argumentStorage.reserve(argc > 1 ? static_cast<std::size_t>(argc - 1) : 0U);

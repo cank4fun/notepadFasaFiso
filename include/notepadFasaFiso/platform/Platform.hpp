@@ -35,4 +35,8 @@ struct FontEnumerationResult final {
 [[nodiscard]] std::filesystem::path applicationDataDirectory();
 [[nodiscard]] FontEnumerationResult systemFontFamilies();
 
+#if defined(_WIN32)
+void refreshFileAssociations() noexcept;
+#endif
+
 }

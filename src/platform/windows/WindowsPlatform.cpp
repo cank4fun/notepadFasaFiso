@@ -4,6 +4,7 @@
 #define NOMINMAX
 #include <Windows.h>
 #include <shellapi.h>
+#include <shlobj.h>
 #include <dwrite.h>
 
 #include <limits>
@@ -14,6 +15,57 @@
 namespace nff::platform {
 
 namespace {
+
+[[nodiscard]] bool writeRegistryString(const HKEY root,
+                                       const std::wstring_view subkey,
+                                       const wchar_t* valueName,
+                                       const std::wstring_view value) noexcept {
+    HKEY key = nullptr;
+    if (::RegCreateKeyExW(root,
+                          std::wstring(subkey).c_str(),
+                          0,
+                          nullptr,
+                          REG_OPTION_NON_VOLATILE,
+                          KEY_SET_VALUE,
+                          nullptr,
+                          &key,
+                          nullptr) != ERROR_SUCCESS) {
+        return false;
+    }
+
+    const std::wstring owned(value);
+    const auto bytes = static_cast<DWORD>((owned.size() + 1U) * sizeof(wchar_t));
+    const auto status = ::RegSetValueExW(
+        key,
+        valueName,
+        0,
+        REG_SZ,
+        reinterpret_cast<const BYTE*>(owned.c_str()),
+        bytes);
+    ::RegCloseKey(key);
+    return status == ERROR_SUCCESS;
+}
+
+[[nodiscard]] bool writeRegistryNone(const HKEY root,
+                                     const std::wstring_view subkey,
+                                     const wchar_t* valueName) noexcept {
+    HKEY key = nullptr;
+    if (::RegCreateKeyExW(root,
+                          std::wstring(subkey).c_str(),
+                          0,
+                          nullptr,
+                          REG_OPTION_NON_VOLATILE,
+                          KEY_SET_VALUE,
+                          nullptr,
+                          &key,
+                          nullptr) != ERROR_SUCCESS) {
+        return false;
+    }
+
+    const auto status = ::RegSetValueExW(key, valueName, 0, REG_NONE, nullptr, 0);
+    ::RegCloseKey(key);
+    return status == ERROR_SUCCESS;
+}
 
 [[nodiscard]] std::string wideToUtf8(const std::wstring_view text, std::error_code& error) {
     if (text.empty()) {
@@ -164,6 +216,82 @@ std::filesystem::path applicationDataDirectory() {
     }
     buffer.resize(static_cast<std::size_t>(written));
     return std::filesystem::path(buffer) / L"notepadFasaFiso";
+}
+
+void refreshFileAssociations() noexcept {
+    std::wstring executable(32768U, L'\0');
+    const DWORD length =
+        ::GetModuleFileNameW(nullptr, executable.data(), static_cast<DWORD>(executable.size()));
+    if (length == 0U || length >= executable.size()) {
+        return;
+    }
+    executable.resize(static_cast<std::size_t>(length));
+
+    const std::wstring quotedExecutable = L"\"" + executable + L"\"";
+    const std::wstring command = quotedExecutable + L" \"%1\"";
+    const std::wstring icon = quotedExecutable + L",0";
+
+    constexpr std::wstring_view applicationKey =
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe";
+    constexpr std::wstring_view progIdKey =
+        L"Software\\Classes\\notepadFasaFiso.txt";
+
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER, applicationKey, L"FriendlyAppName", L"notepadFasaFiso"));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe\\DefaultIcon",
+        nullptr,
+        icon));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe\\shell\\open\\command",
+        nullptr,
+        command));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe\\SupportedTypes",
+        L".txt",
+        L""));
+
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER, progIdKey, nullptr, L"notepadFasaFiso Text Document"));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\notepadFasaFiso.txt\\DefaultIcon",
+        nullptr,
+        icon));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\notepadFasaFiso.txt\\shell\\open\\command",
+        nullptr,
+        command));
+    static_cast<void>(writeRegistryNone(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\.txt\\OpenWithProgids",
+        L"notepadFasaFiso.txt"));
+
+    constexpr std::wstring_view capabilitiesKey =
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe\\Capabilities";
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER, capabilitiesKey, L"ApplicationName", L"notepadFasaFiso"));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        capabilitiesKey,
+        L"ApplicationDescription",
+        L"Fast native text editor and file viewer"));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe\\Capabilities\\FileAssociations",
+        L".txt",
+        L"notepadFasaFiso.txt"));
+    static_cast<void>(writeRegistryString(
+        HKEY_CURRENT_USER,
+        L"Software\\RegisteredApplications",
+        L"notepadFasaFiso",
+        L"Software\\Classes\\Applications\\notepadFasaFiso.exe\\Capabilities"));
+
+    ::SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 }
 
 FontEnumerationResult systemFontFamilies() {
