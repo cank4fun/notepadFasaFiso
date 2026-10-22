@@ -314,6 +314,23 @@ endif()
 
 add_test(NAME nff_gui_runtime_tests COMMAND nff_gui_runtime_tests)
 
+if(NFF_BUILD_WX_GUI)
+    add_executable(nff_wx_font_tests
+        gui/WxFontTests.cpp
+        ../src/gui/wx/WxEditorHost.cpp
+        ../src/gui/wx/WxTheme.cpp
+    )
+    target_include_directories(nff_wx_font_tests PRIVATE ../src/gui/wx)
+    target_link_libraries(nff_wx_font_tests PRIVATE nff_core ${wxWidgets_LIBRARIES})
+    if(MSVC)
+        target_compile_options(nff_wx_font_tests PRIVATE /W4 /permissive- /EHsc /utf-8)
+    else()
+        target_compile_options(nff_wx_font_tests PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion)
+    endif()
+    add_test(NAME nff_wx_font_tests COMMAND nff_wx_font_tests)
+    set_tests_properties(nff_wx_font_tests PROPERTIES LABELS "gui" TIMEOUT 30)
+endif()
+
 add_executable(nff_lifecycle_tests
     app/ApplicationLifecycleTests.cpp
 )

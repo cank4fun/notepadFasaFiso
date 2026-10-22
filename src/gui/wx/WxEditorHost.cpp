@@ -1572,9 +1572,8 @@ void WxEditorHost::restyleTextAppearance() {
                 const int style = nextStyle++;
                 control_->StyleSetForeground(style, theme_->text);
                 control_->StyleSetBackground(style, theme_->editor);
-                if (!fontFamily_.empty()) {
-                    control_->StyleSetFaceName(style, wxString::FromUTF8(fontFamily_));
-                }
+                control_->StyleSetFaceName(
+                    style, control_->StyleGetFaceName(wxSTC_STYLE_DEFAULT));
                 control_->StyleSetSize(style,
                     static_cast<int>(std::round(std::max(1.0, fontPointSize_))));
 
@@ -1586,10 +1585,11 @@ void WxEditorHost::restyleTextAppearance() {
                                  static_cast<unsigned char>((argb >> 8U) & 0xFFU),
                                  static_cast<unsigned char>(argb & 0xFFU)));
                 }
-                if (span.style.fontFamilyId &&
-                    *span.style.fontFamilyId < appearanceFontFamilies_.size()) {
+                // Metadata family IDs are one-based; zero means no family.
+                if (span.style.fontFamilyId && *span.style.fontFamilyId > 0U &&
+                    *span.style.fontFamilyId <= appearanceFontFamilies_.size()) {
                     control_->StyleSetFaceName(
-                        style, wxString::FromUTF8(appearanceFontFamilies_[*span.style.fontFamilyId]));
+                        style, wxString::FromUTF8(appearanceFontFamilies_[*span.style.fontFamilyId - 1U]));
                 }
                 if (span.style.fontSizePoints) {
                     control_->StyleSetSize(style, static_cast<int>(*span.style.fontSizePoints));
